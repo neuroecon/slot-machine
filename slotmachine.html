@@ -1,0 +1,138 @@
+Please play this spinner game
+
+<style type="text/css">@import url('https://fonts.googleapis.com/css?family=Cairo');
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg)
+  }
+}
+
+#root { 
+  background-color: #292929;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {  
+  font-size: 150%;
+  padding: 0.25em .5em;  
+  font-family: 'Cairo', sans-serif;
+}
+
+h1 span {
+  color: aliceblue;
+  border: 1px solid hsla(208, 100%, 97.1%, .2);
+  padding: 0.1em .2em;  
+}
+
+.icons { 
+  display: inline-block;
+  width: 150px;
+  height: 707px;
+  overflow: hidden;
+  background: #fff url(./slots.png) repeat-y;
+  will-change: backgroundPosition;
+  transform: translateZ(0);
+  transition: .3s ease;
+  background-image: url(https://lh3.googleusercontent.com/xvYtgD4odIwAAPo5hVcISr75uhBz4Pfq4c60Pho3AeUOhmuBOeo7ee2saB_wgFhDqi4dgDi2aMpyYTfUtTbrLOUN260RrjIK3ZZ7oy7UrYv8Z_qQzHpNfqWk5Q9X1PAvJCfdCC3BJHJ9TyBF64ThZuURR8hGMAjS8XoFVbaQ5geYzb3brZSYkzGUdgv4aruhBkeENXG3-WANaVySNVM5n-x4XqmeJEem1gIPdhvE4S2gZFsQO0WaOcmojfpXayMUuw9XfKFWF_Xu7wxNmh6XDLyDYrJT4m_HFQk6AkoAPpd94bdHzHUREuh51g6lMdmeyjfcu1c9olM_2YdTLpjTP6Br-0SXDpziu7jBfEd4Xtd23eVphrP5tQfJhv9qsHVspQiV2aCgwq8K48rSv92F3BYjdMMhviGLK9LljWIyRC5IlxNSuukOj18URzLhnlwR6LJ_IAoIsXAijsQ9rrwIvXHUQOsmpbWDfZuCw61DEC2HNJt-VcdHWm2SXQnGktWjVlTfWAQa3SUPymtB2CwcgGQcO7tpKeWboNls-Yfh0RDdgt9oDsoZdZJPi1EiltjxyX6IGjJ65MqDAVJyLjYVF21yv9UAMSsU5ocCfniI5cmhYWd5Pfk1COfMtGSM0lph24TU5JsBLwNdOV5tEU8vYvq1EIEf67-5Z77ukklfFZDCt_ExWCKHT1kjeqA=w150-h606-no);
+  background-size: 150px 606px;
+  background-position-y: -11px;
+}
+.spin-behavior {
+    transition: 4.3s cubic-bezier(.17,1.09,.33,.95)/*cubic-bezier(.14,.92,0,.71)*/ /*cubic-bezier(.08,1.13,.04,1.02)*/ /*cubic-bezier(.13,.03,0,1.03)*/;
+}
+
+.spinner-container {
+  position: relative;
+  height: 707px;
+  display: flex;
+  transition: 0.3s transform;
+  width: 320px; /* 300 plus 20 between */
+  justify-content: space-between;
+}
+
+.app-wrap.winner-false {
+  animation: linear 1s spin;
+}
+
+/* pay line border */
+.spinner-container::after {
+  position: absolute;
+  content: '';
+  display: block;
+  height: 101px;
+  top: 50%;
+  transform: translateY(-50%);
+  right: -20px;
+  left: -20px;
+  border: 8px solid gold;
+}
+.spinner-container.spinning::after {
+  border-color: slategrey;
+}
+.spinner-container.selecting::after {
+  border-color: darkred;
+}
+/*
+.spinner-resizer {
+    height: calc(.7 * 707px);
+    overflow:hidden;
+    margin-bottom: 20px;
+}
+.spinner-resizer>div {
+  transform: scale(.7);
+  margin-top: calc(-.3 * 707px / 2);
+}
+*/
+.gradient-fade {
+  position: absolute;
+  top: 0px;
+  right: 0;
+  bottom: 0px;
+  left: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(34,34,34,1) 0%,
+    rgba(64,64,63,0) 10%,
+    rgba(64,64,64,0) 90%,
+    rgba(34,34,34,1) 100%
+  )
+}
+
+
+/* The snackbar - position it at the bottom and in the middle of the screen */
+.toast {
+    width: 550px;
+    height: 100px;
+    visibility: hidden; /* Hidden by default. Visible on click */
+    margin-left: -275px; /* Divide value of min-width by 2 */
+    background-color: #333; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 1; /* Add a z-index if needed */
+    left: 50%; /* Center the snackbar */
+    bottom: 0;
+    opacity: 0;
+    transition: opacity .45s, bottom .35s;
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+.toast.show {
+  visibility: visible;
+  bottom: 50px;
+  opacity: 1;
+}
+
+</style>
+
+<div id="root"></div>
+<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" src="https://idamayer.com/slotmachine.js"></script>
+
