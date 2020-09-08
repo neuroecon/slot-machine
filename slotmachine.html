@@ -1,24 +1,26 @@
 Please play this spinner game
 
 <style type="text/css">@import url('https://fonts.googleapis.com/css?family=Cairo');
-
+/*
 @keyframes spin {
   to {
     transform: rotate(360deg)
   }
 }
-
+*/
 #root { 
   background-color: #292929;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 h1 {  
   font-size: 150%;
   padding: 0.25em .5em;  
   font-family: 'Cairo', sans-serif;
+  margin: 25px;
 }
 
 h1 span {
@@ -41,7 +43,7 @@ h1 span {
   background-position-y: -11px;
 }
 .spin-behavior {
-    transition: 4.3s cubic-bezier(.17,1.09,.33,.95)/*cubic-bezier(.14,.92,0,.71)*/ /*cubic-bezier(.08,1.13,.04,1.02)*/ /*cubic-bezier(.13,.03,0,1.03)*/;
+    transition: background-position 4.3s cubic-bezier(.17,1.09,.33,.95)/*cubic-bezier(.14,.92,0,.71)*/ /*cubic-bezier(.08,1.13,.04,1.02)*/ /*cubic-bezier(.13,.03,0,1.03)*/;
 }
 
 .spinner-container {
@@ -51,10 +53,6 @@ h1 span {
   transition: 0.3s transform;
   width: 320px; /* 300 plus 20 between */
   justify-content: space-between;
-}
-
-.app-wrap.winner-false {
-  animation: linear 1s spin;
 }
 
 /* pay line border */
@@ -75,7 +73,7 @@ h1 span {
 .spinner-container.selecting::after {
   border-color: darkred;
 }
-/*
+
 .spinner-resizer {
     height: calc(.7 * 707px);
     overflow:hidden;
@@ -85,7 +83,7 @@ h1 span {
   transform: scale(.7);
   margin-top: calc(-.3 * 707px / 2);
 }
-*/
+
 .gradient-fade {
   position: absolute;
   top: 0px;
@@ -104,34 +102,91 @@ h1 span {
 
 /* The snackbar - position it at the bottom and in the middle of the screen */
 .toast {
-    width: 550px;
-    height: 100px;
-    visibility: hidden; /* Hidden by default. Visible on click */
-    margin-left: -275px; /* Divide value of min-width by 2 */
-    background-color: #333; /* Black background color */
-    color: #fff; /* White text color */
-    text-align: center; /* Centered text */
-    border-radius: 2px; /* Rounded borders */
-    padding: 16px; /* Padding */
-    position: fixed; /* Sit on top of the screen */
-    z-index: 1; /* Add a z-index if needed */
-    left: 50%; /* Center the snackbar */
-    bottom: 0;
-    opacity: 0;
-    transition: opacity .45s, bottom .35s;
+  padding: 16px; /* Padding */
+  padding-top: 25px;
+  width: 550px;
+  visibility: hidden; /* Hidden by default. Visible on click */
+  margin-left: -275px; /* Divide value of min-width by 2 */
+  background: white;
+  color: black;
+  box-shadow: 0 0 300px black;
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  position: absolute;
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  bottom: 0;
+  opacity: 0;
+  transition: opacity .55s, bottom .45s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 24px;
+}
+
+.toast button {
+  max-width: 100px;
+}
+
+.tost input {
+  width: 300px;
 }
 
 /* Show the snackbar when clicking on a button (class added with JavaScript) */
 .toast.show {
   visibility: visible;
-  bottom: 50px;
+  bottom: 260px;
   opacity: 1;
 }
 
-button {
-  background-color: white;
-  color: black;
-  font-size: 14px;
+#root button {
+  background-color: lightgrey;
+    color: black;
+    font-size: 20px;
+    padding: 3px 20px;
+    margin-top: 20px;
+    display: block;
+    border: none;
+    border-radius: 2px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+#root button[disabled] {
+  color: #777;
+}
+
+.selecting .arrow {
+    position: absolute;
+    width: 150px;
+    height: 100px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    box-shadow: inset 0px 75px 60px white;
+}
+.selecting .arrow::after {
+  content: '';
+  background-color: rgba(255,255,255,.3);
+  width: 0;
+  height: 0;
+  box-shadow: 0 0 100px white;
+  border-left: 60px solid transparent;
+  border-right: 60px solid transparent;
+  margin-left: 16px;
+}
+.selecting .up.arrow {
+  top: -1px;
+}
+.selecting .up.arrow::after {
+  border-bottom: 60px solid black;
+}
+.selecting .down.arrow {
+  bottom: -1px;
+}
+.selecting .down.arrow::after {
+  border-top: 60px solid black;
+  position: relative;
+  bottom: -75px;
 }
 
 </style>
@@ -139,6 +194,8 @@ button {
 <div id="root"></div>
 <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script src="slotmachine.js"></script>
+<script type="text/javascript">
+  /** Slot machine js goes here */
+
+</script>
 

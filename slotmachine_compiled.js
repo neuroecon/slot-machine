@@ -2,16 +2,22 @@
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-// TODO: ticking noises
 // TODO: write to a log file
 // TODO: apply the css transition value in js so we can manipulate variables and keep in sync w timeout
+// TODO: ticking noises
 // TODO: add directions plus screen buttons for up down arrows
 // TODO: consider resetting the offset difference for sanity's sake
 // TODO: randomize a few different cubic bezier curves + timings
 // TODO: rotate the other way
 // TODO: Questions scale 0-100 motivation & happiness -100-100
+// TODO: hammer.js drag listener for changing the start value
+// TODO" show and hide qualtrics next buttons
+
+/** Note: This code is written in babel. compile babel to js via https://babeljs.io/repl */
 const spinsPerQuestion = 2;
-const questions = ['How happy are you?', 'Do you want to play again?']; // const parameters
+const questions = ['How happy are you?', 'Do you want to play again?'];
+const spinDuration = 4300;
+const bezierCurve = 'cubic-bezier(.17,1.09,.33,.95)'; // const parameters
 
 const iconHeight = 101;
 const totalSymbols = 6;
@@ -49,6 +55,12 @@ function WinningSound(props) {
 
 function getSymbolFromPosition(position) {
   return position / iconHeight % totalSymbols;
+}
+
+function writeToLogs(log) {
+  // Note, this sends a message event that Qualtrics js will listen to and
+  // update an embedded data field by appending the new logs data.
+  window.parent.postMessage(log, "*");
 }
 /**
 Possible modes:
@@ -114,17 +126,9 @@ class App extends React.Component {
     this.finishHandler = this.finishHandler.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.unblockSpinner = this.unblockSpinner.bind(this);
-    this.writeToLogs = this.writeToLogs.bind(this);
-    this.ss = null;
-    this.logs = [];
+    this.upArrow = this.upArrow.bind(this);
+    this.downArrow = this.downArrow.bind(this);
     document.addEventListener('keydown', this.handleKeyPress);
-  }
-
-  writeToLogs(log) {
-    alert('what??');
-    window.console.log('writing to logs', log);
-    window.parent.postMessage(log, "*");
-    window.parent.postMessage('hello world', "*");
   }
 
   handleClick() {
@@ -156,13 +160,19 @@ class App extends React.Component {
   }
 
   unblockSpinner() {
-    window.console.log('unblock spinner');
-    this.writeToLogs(["0", "1", "2"]); // TODO: handle ending the experiment.
+    // TODO: handle ending the experiment.
     // alert('thank you for playing, that was all the data we needed');
-
     this.setState({
       mode: 'selecting'
     });
+  }
+
+  upArrow() {
+    alert('up');
+  }
+
+  downArrow() {
+    alert('down');
   }
 
   render() {
@@ -192,12 +202,18 @@ class App extends React.Component {
       }
     }), /*#__PURE__*/React.createElement("div", {
       className: "gradient-fade"
-    }))), /*#__PURE__*/React.createElement(RepeatButton, {
-      onClick: this.handleClick,
-      disabled: mode !== 'selecting'
-    }), /*#__PURE__*/React.createElement(Question, {
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "up arrow",
+      onClick: this.upArrow
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "down arrow",
+      onClick: this.downArrow
+    })), /*#__PURE__*/React.createElement(Question, {
       mode: mode,
       onFinish: this.unblockSpinner
+    })), /*#__PURE__*/React.createElement(RepeatButton, {
+      onClick: this.handleClick,
+      disabled: mode !== 'selecting'
     }));
   }
 
@@ -208,7 +224,8 @@ class Spinner extends React.Component {
     super(props);
     this.reset = this.reset.bind(this);
     this.state = {
-      position: this.setStartPosition()
+      position: this.generateStartPosition(),
+      transition: this.generateTransition()
     };
   }
 
@@ -221,7 +238,8 @@ class Spinner extends React.Component {
 
     this.setState({
       // Rotate 12 times plus a small random number
-      position: this.state.position - (12 * totalSymbols + Math.floor(Math.random() * totalSymbols)) * iconHeight
+      position: this.state.position - (12 * totalSymbols + Math.floor(Math.random() * totalSymbols)) * iconHeight,
+      transition: this.generateTransition()
     });
     this.timer = setTimeout(() => {
       this.props.onFinish(this.state.position);
@@ -229,8 +247,12 @@ class Spinner extends React.Component {
     /* Note: This MUST match the value in the CSS transition */
   }
 
-  setStartPosition() {
+  generateStartPosition() {
     return Math.floor(Math.random() * totalSymbols) * iconHeight * -1;
+  }
+
+  generateTransition() {
+    return `background-position ${spinDuration}ms ${bezierCurve}`;
   }
 
   componentDidMount() {
@@ -239,11 +261,13 @@ class Spinner extends React.Component {
 
   render() {
     let {
-      position
+      position,
+      transition
     } = this.state;
     return /*#__PURE__*/React.createElement("div", {
       style: {
-        backgroundPositionY: position + 'px'
+        backgroundPositionY: position + 'px',
+        transition: transition
       },
       className: "icons spin-behavior"
     });
@@ -257,7 +281,7 @@ class Question extends React.Component {
 
     _defineProperty(this, "getInitialState", () => {
       return {
-        value: 3
+        value: 0
       };
     });
 
@@ -270,19 +294,21 @@ class Question extends React.Component {
 
     _defineProperty(this, "handleSubmit", event => {
       // TODO: write logs
-      // Either ask the next question or decide we're done and return to the spinner
+      writeToLogs([1, 2, 3]); // Either ask the next question or decide we're done and return to the spinner
+
       if (this.state.index == questions.length - 1) {
         this.props.onFinish();
       } else {
         this.setState({
-          index: this.state.index + 1
+          index: this.state.index + 1,
+          value: 0
         });
       }
     });
 
     this.state = {
       index: 0,
-      value: 3
+      value: 0
     };
   }
 
